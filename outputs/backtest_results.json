@@ -1,0 +1,388 @@
+{
+  "config": {
+    "through_season": 2022,
+    "k_runs": 60.0,
+    "k_wickets": 240.0,
+    "profile_strength": 120.0,
+    "tuned_on": 2022,
+    "test_seasons": [
+      2023,
+      2024
+    ],
+    "min_test_balls": 12,
+    "status": "Validation-selected; holdout evaluated without retuning"
+  },
+  "protocol": {
+    "initial_training": "2008\u20132021",
+    "validation": "2022",
+    "final_training": "2008\u20132022",
+    "holdout": "2023\u20132024; frozen training cutoff for both seasons",
+    "unit": "One batter\u2013bowler\u2013phase\u2013season group with at least N test legal balls",
+    "target": "Bat runs per legal delivery; excludes extras",
+    "primary_metric": "Equal-weight group MAE on common-history groups",
+    "tuning_objective": "Equal-weight group MAE on all eligible 2022 groups",
+    "wicket_metric": "Per-legal-delivery Brier score; lower is better",
+    "min_test_balls": 12,
+    "raw_h2h_min_training_balls": 1,
+    "note": "Held-out groups are selected by exposure, not outcomes. No history update within test."
+  },
+  "validation": {
+    "groups": 129,
+    "run_grid": [
+      {
+        "profile_strength": 30.0,
+        "k_runs": 5.0,
+        "validation_mae": 0.44026099290044624
+      },
+      {
+        "profile_strength": 30.0,
+        "k_runs": 15.0,
+        "validation_mae": 0.414463298009352
+      },
+      {
+        "profile_strength": 30.0,
+        "k_runs": 30.0,
+        "validation_mae": 0.4081991809446963
+      },
+      {
+        "profile_strength": 30.0,
+        "k_runs": 60.0,
+        "validation_mae": 0.40903341664407894
+      },
+      {
+        "profile_strength": 30.0,
+        "k_runs": 120.0,
+        "validation_mae": 0.41138180668926966
+      },
+      {
+        "profile_strength": 30.0,
+        "k_runs": 240.0,
+        "validation_mae": 0.4130180973937213
+      },
+      {
+        "profile_strength": 60.0,
+        "k_runs": 5.0,
+        "validation_mae": 0.4397725700981327
+      },
+      {
+        "profile_strength": 60.0,
+        "k_runs": 15.0,
+        "validation_mae": 0.4134908731856541
+      },
+      {
+        "profile_strength": 60.0,
+        "k_runs": 30.0,
+        "validation_mae": 0.407272988385906
+      },
+      {
+        "profile_strength": 60.0,
+        "k_runs": 60.0,
+        "validation_mae": 0.4078100111833765
+      },
+      {
+        "profile_strength": 60.0,
+        "k_runs": 120.0,
+        "validation_mae": 0.410083207453996
+      },
+      {
+        "profile_strength": 60.0,
+        "k_runs": 240.0,
+        "validation_mae": 0.4117109754487191
+      },
+      {
+        "profile_strength": 120.0,
+        "k_runs": 5.0,
+        "validation_mae": 0.43878223089992074
+      },
+      {
+        "profile_strength": 120.0,
+        "k_runs": 15.0,
+        "validation_mae": 0.4119482542248706
+      },
+      {
+        "profile_strength": 120.0,
+        "k_runs": 30.0,
+        "validation_mae": 0.4057093488247817
+      },
+      {
+        "profile_strength": 120.0,
+        "k_runs": 60.0,
+        "validation_mae": 0.40565543961899875
+      },
+      {
+        "profile_strength": 120.0,
+        "k_runs": 120.0,
+        "validation_mae": 0.40766720660869527
+      },
+      {
+        "profile_strength": 120.0,
+        "k_runs": 240.0,
+        "validation_mae": 0.4095816648847324
+      }
+    ],
+    "wicket_grid": [
+      {
+        "k_wickets": 5.0,
+        "validation_brier": 0.020562663966816785
+      },
+      {
+        "k_wickets": 15.0,
+        "validation_brier": 0.019986577235736866
+      },
+      {
+        "k_wickets": 30.0,
+        "validation_brier": 0.019856075127561143
+      },
+      {
+        "k_wickets": 60.0,
+        "validation_brier": 0.019807161673632757
+      },
+      {
+        "k_wickets": 120.0,
+        "validation_brier": 0.01979390263358741
+      },
+      {
+        "k_wickets": 240.0,
+        "validation_brier": 0.01979266785216149
+      }
+    ]
+  },
+  "eligible_test_groups": 224,
+  "common_history": {
+    "groups": 119,
+    "balls": 1720,
+    "methods": {
+      "League": {
+        "groups": 119,
+        "balls": 1720,
+        "mae": 0.39284001611779723,
+        "ball_weighted_mae": 0.3868085076621185,
+        "wicket_brier": 0.017105387060468064
+      },
+      "Bowler": {
+        "groups": 119,
+        "balls": 1720,
+        "mae": 0.40643522747267624,
+        "ball_weighted_mae": 0.39895812458214186,
+        "wicket_brier": 0.017182940511933493
+      },
+      "Raw H2H": {
+        "groups": 119,
+        "balls": 1720,
+        "mae": 0.5591422557921266,
+        "ball_weighted_mae": 0.5585144294053119,
+        "wicket_brier": 0.025324852697151345
+      },
+      "Shrinkage": {
+        "groups": 119,
+        "balls": 1720,
+        "mae": 0.3894216862429061,
+        "ball_weighted_mae": 0.38336294587324654,
+        "wicket_brier": 0.017072752622411945
+      }
+    }
+  },
+  "all_eligible": {
+    "groups": 224,
+    "balls": 3186,
+    "methods": {
+      "League": {
+        "groups": 224,
+        "balls": 3186,
+        "mae": 0.4120042198660177,
+        "ball_weighted_mae": 0.40974637020986204,
+        "wicket_brier": 0.018634098094228738
+      },
+      "Bowler": {
+        "groups": 224,
+        "balls": 3186,
+        "mae": 0.4185306763011467,
+        "ball_weighted_mae": 0.41577713432046737,
+        "wicket_brier": 0.018681451771663866
+      },
+      "Shrinkage": {
+        "groups": 224,
+        "balls": 3186,
+        "mae": 0.4071711023650989,
+        "ball_weighted_mae": 0.4052512762750659,
+        "wicket_brier": 0.018684399920443306
+      }
+    }
+  },
+  "by_phase": {
+    "Powerplay": {
+      "groups": 48,
+      "balls": 707,
+      "methods": {
+        "League": {
+          "groups": 48,
+          "balls": 707,
+          "mae": 0.4525862005641417,
+          "ball_weighted_mae": 0.4397160733539067,
+          "wicket_brier": 0.014462467073444129
+        },
+        "Bowler": {
+          "groups": 48,
+          "balls": 707,
+          "mae": 0.4759562102872856,
+          "ball_weighted_mae": 0.45886540074044563,
+          "wicket_brier": 0.01441296411388333
+        },
+        "Raw H2H": {
+          "groups": 48,
+          "balls": 707,
+          "mae": 0.6183547324620141,
+          "ball_weighted_mae": 0.6025568804882248,
+          "wicket_brier": 0.02770312701984433
+        },
+        "Shrinkage": {
+          "groups": 48,
+          "balls": 707,
+          "mae": 0.45376643104138165,
+          "ball_weighted_mae": 0.43627067330895514,
+          "wicket_brier": 0.014302780350656697
+        }
+      }
+    },
+    "Middle": {
+      "groups": 67,
+      "balls": 962,
+      "methods": {
+        "League": {
+          "groups": 67,
+          "balls": 962,
+          "mae": 0.3183527077179912,
+          "ball_weighted_mae": 0.31703287937263247,
+          "wicket_brier": 0.018779274811428857
+        },
+        "Bowler": {
+          "groups": 67,
+          "balls": 962,
+          "mae": 0.3296973589509333,
+          "ball_weighted_mae": 0.32829008291942025,
+          "wicket_brier": 0.018894571344175274
+        },
+        "Raw H2H": {
+          "groups": 67,
+          "balls": 962,
+          "mae": 0.44778492426529914,
+          "ball_weighted_mae": 0.4623739820567861,
+          "wicket_brier": 0.022494077445672597
+        },
+        "Shrinkage": {
+          "groups": 67,
+          "balls": 962,
+          "mae": 0.32174361353193354,
+          "ball_weighted_mae": 0.32311205525810166,
+          "wicket_brier": 0.01881606820285548
+        }
+      }
+    },
+    "Death": {
+      "groups": 4,
+      "balls": 51,
+      "methods": {
+        "League": {
+          "groups": 4,
+          "balls": 51,
+          "mae": 0.9235482184584133,
+          "ball_weighted_mae": 0.969524301199202,
+          "wicket_brier": 0.02216939518599047
+        },
+        "Bowler": {
+          "groups": 4,
+          "balls": 51,
+          "mae": 0.8575427314365588,
+          "ball_weighted_mae": 0.9014720821432674,
+          "wicket_brier": 0.023296361155166256
+        },
+        "Raw H2H": {
+          "groups": 4,
+          "balls": 51,
+          "mae": 1.713827838827839,
+          "ball_weighted_mae": 1.7614379084967322,
+          "wicket_brier": 0.0457516339869281
+        },
+        "Shrinkage": {
+          "groups": 4,
+          "balls": 51,
+          "mae": 0.7508924665699885,
+          "ball_weighted_mae": 0.786413798318803,
+          "wicket_brier": 0.02258845473504475
+        }
+      }
+    }
+  },
+  "by_season": {
+    "2023": {
+      "groups": 64,
+      "balls": 939,
+      "methods": {
+        "League": {
+          "groups": 64,
+          "balls": 939,
+          "mae": 0.3661632448745103,
+          "ball_weighted_mae": 0.3650603359054339,
+          "wicket_brier": 0.019205153707521547
+        },
+        "Bowler": {
+          "groups": 64,
+          "balls": 939,
+          "mae": 0.3733977374832331,
+          "ball_weighted_mae": 0.37140400109646116,
+          "wicket_brier": 0.019217031578178938
+        },
+        "Raw H2H": {
+          "groups": 64,
+          "balls": 939,
+          "mae": 0.5043923947951074,
+          "ball_weighted_mae": 0.5050721072276455,
+          "wicket_brier": 0.026749878869326275
+        },
+        "Shrinkage": {
+          "groups": 64,
+          "balls": 939,
+          "mae": 0.3532137913175659,
+          "ball_weighted_mae": 0.34911362406066937,
+          "wicket_brier": 0.01918716700703904
+        }
+      }
+    },
+    "2024": {
+      "groups": 55,
+      "balls": 781,
+      "methods": {
+        "League": {
+          "groups": 55,
+          "balls": 781,
+          "mae": 0.42388207720089477,
+          "ball_weighted_mae": 0.41295643759749207,
+          "wicket_brier": 0.014580827673037568
+        },
+        "Bowler": {
+          "groups": 55,
+          "balls": 781,
+          "mae": 0.44487885218766454,
+          "ball_weighted_mae": 0.43208657778707676,
+          "wicket_brier": 0.014737343186447613
+        },
+        "Raw H2H": {
+          "groups": 55,
+          "balls": 781,
+          "mae": 0.6228511849522945,
+          "ball_weighted_mae": 0.6227683865433769,
+          "wicket_brier": 0.023611536979261123
+        },
+        "Shrinkage": {
+          "groups": 55,
+          "balls": 781,
+          "mae": 0.4315545094287564,
+          "ball_weighted_mae": 0.4245410677452183,
+          "wicket_brier": 0.014530582190702792
+        }
+      }
+    }
+  },
+  "profile_fallback_groups": 41,
+  "bowler_fallback_groups": 21
+}

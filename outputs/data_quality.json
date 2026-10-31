@@ -1,0 +1,38 @@
+{
+  "matches": 1095,
+  "raw_deliveries": 260920,
+  "normal_deliveries": 260759,
+  "super_over_deliveries_excluded": 161,
+  "legal_balls": 251319,
+  "players": 732,
+  "bowler_wickets": 11795,
+  "first_season": 2008,
+  "last_season": 2024,
+  "foreign_key_check": "passed",
+  "integrity_check": "passed",
+  "aggregate_reconciliation": "passed",
+  "phase_totals": [
+    [
+      "Powerplay",
+      78656,
+      96478,
+      2943
+    ],
+    [
+      "Middle",
+      116079,
+      143638,
+      4640
+    ],
+    [
+      "Death",
+      56584,
+      88171,
+      4177
+    ]
+  ],
+  "source_sha256": {
+    "matches.csv": "8a0394246d2a76b44526565f2245d8f4feff91babe57ab16676a2c3d67aa0846",
+    "deliveries.csv": "142236ea52950795dab266d4aa392c7645bd1a0db4704f0b8058afd96e24e2c2"
+  }
+}

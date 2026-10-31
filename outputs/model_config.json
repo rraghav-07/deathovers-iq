@@ -1,0 +1,13 @@
+{
+  "through_season": 2022,
+  "k_runs": 60.0,
+  "k_wickets": 240.0,
+  "profile_strength": 120.0,
+  "tuned_on": 2022,
+  "test_seasons": [
+    2023,
+    2024
+  ],
+  "min_test_balls": 12,
+  "status": "Validation-selected; holdout evaluated without retuning"
+}
