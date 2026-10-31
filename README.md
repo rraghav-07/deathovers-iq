@@ -1,114 +1,233 @@
-# DeathOvers IQ — IPL captain's matchup advisor
+# DeathOvers IQ
 
-Start with **START_HERE.md** for the complete local dashboard instructions.
+### Historical IPL matchup analysis for captains and analysts
 
-```powershell
-py -m pip install -r requirements.txt
-py -m streamlit run app/streamlit_app.py
+**[Live Dashboard](https://deathovers-iq.streamlit.app/)** · **[GitHub Repository](https://github.com/rraghav-07/deathovers-iq)**
+
+Choosing a bowler against a particular batter is difficult when their direct matchup history contains only a handful of deliveries.
+
+DeathOvers IQ combines phase-specific player profiles with direct head-to-head history using shrinkage. It lets users compare bowling options, inspect sample sizes and explore the evidence behind each estimate across Powerplay, Middle and Death overs.
+
+## Key findings
+
+- On **119 held-out matchup–phase–season groups**, shrinkage reduced run-rate MAE by **30.35% versus raw head-to-head** and **4.19% versus the bowler baseline**.
+- Improvement over the **league phase average was only 0.87%**. The model performed approximately on par with this simple baseline; its strongest measured benefit was stabilising raw head-to-head estimates.
+- Only **four death-phase groups** qualified for the common-history comparison. Death-specific predictive strength is not established, and death-over recommendations remain exploratory.
+
+These are results from one chronological holdout, without a statistical-significance claim.
+
+## Explore the dashboard
+
+### Captain’s Cheat Sheet
+
+Select a batter, phase and available bowlers to compare:
+
+- Predicted bat runs per legal delivery.
+- Predicted bowler-credited wicket probability per legal delivery.
+- Direct head-to-head sample size and its contribution to the estimate.
+- A ranking controlled by the chosen wicket-value assumption.
+- A runs-versus-wickets chart and downloadable comparison table.
+
+### Batter Profile
+
+Explore phase records and direct matchup history, with sample sizes alongside performance measures.
+
+### Bowler Profile
+
+Inspect phase performance, wickets, descriptive economy and opponent records.
+
+### Model Validation
+
+Compare the model with simple baselines, inspect the chronological evaluation split and review sample limitations.
+
+## Data and database design
+
+The supplied dataset covers **IPL 2008–2024**:
+
+| Item | Count |
+|---|---:|
+| Matches | 1,095 |
+| Recorded deliveries | 260,920 |
+| Player names | 732 |
+| Super Over deliveries excluded from standard profiles | 161 |
+| Standard-innings legal deliveries | 251,319 |
+
+SQLite links delivery facts to match, player and phase information. Season-specific aggregates support player profiles, matchup summaries and chronological evaluation.
+
+### Cricket-specific handling
+
+- Dataset overs `0–5`: Powerplay.
+- Dataset overs `6–14`: Middle.
+- Dataset overs `15–19`: Death.
+- Wides and no-balls are marked as illegal deliveries.
+- Run-outs are excluded from bowler-credited wickets.
+- Byes and leg-byes are excluded from runs charged to the bowler.
+- Super Over records are preserved but excluded from standard profiles.
+
+The model predicts **bat runs and bowler wickets on legal deliveries**. Its run-rate target excludes extras and is different from official bowling economy.
+
+## How the model works
+
+1. Build phase-specific batter and bowler profiles from the training period.
+2. Regularise sparse player profiles towards the league phase average.
+3. Combine the player profiles into a matchup estimate.
+4. Blend that estimate with direct head-to-head history.
+
+The direct-history weight is:
+
+`weight = historical matchup balls / (historical matchup balls + strength)`
+
+Smaller samples receive less weight. Run and wicket estimates use separately selected strengths.
+
+Validation selected:
+
+| Setting | Strength |
+|---|---:|
+| Player profile | 120 |
+| Run matchup | 60 |
+| Wicket matchup | 240 |
+
+The ranking score is:
+
+`score = predicted bat runs per legal ball − wicket value × predicted wicket probability`
+
+**Lower scores rank first.** Wicket value is a user-selected assumption, not a learned or validated measure of match impact.
+
+Sample-support labels describe the amount of historical evidence. They are **not calibrated predictive confidence**.
+
+## Held-out evaluation
+
+| Stage | Seasons |
+|---|---|
+| Initial training | 2008–2021 |
+| Parameter selection | 2022 |
+| Refit with selected settings | 2008–2022 |
+| Final testing | 2023–2024 |
+
+Training remains frozen for both test seasons. Test results were not used to retune settings.
+
+Each eligible test group represents one batter–bowler–phase–season combination with at least **12 legal test deliveries**.
+
+### Common-history comparison
+
+All methods below are evaluated on the **same 119 groups**, each with at least one direct matchup ball in training.
+
+| Method | MAE ↓ | Ball-weighted MAE ↓ | Wicket Brier ↓ |
+|---|---:|---:|---:|
+| League phase average | 0.3928 | 0.3868 | 0.01711 |
+| Bowler phase average | 0.4064 | 0.3990 | 0.01718 |
+| Raw head-to-head | 0.5591 | 0.5585 | 0.02532 |
+| Shrinkage | **0.3894** | **0.3834** | **0.01707** |
+
+MAE measures absolute error in the average bat-run rate per legal delivery. **MAE 0.3894 does not mean 38.94% error.**
+
+The main MAE gives each eligible group equal weight. Ball-weighted MAE gives more weight to groups containing more test deliveries. Lower wicket Brier scores indicate better probability predictions, but do not establish calibration.
+
+### Results by phase
+
+| Phase | Groups | Bowler MAE | Raw H2H MAE | Shrinkage MAE |
+|---|---:|---:|---:|---:|
+| Powerplay | 48 | 0.4760 | 0.6184 | 0.4538 |
+| Middle | 67 | 0.3297 | 0.4478 | 0.3217 |
+| Death | 4 | 0.8575 | 1.7138 | 0.7509 |
+
+The death-phase comparison is too small to support a broad performance claim.
+
+### Including matchups without prior direct history
+
+Across all **224 eligible test groups**:
+
+| Method | MAE ↓ |
+|---|---:|
+| League phase average | 0.4120 |
+| Bowler phase average | 0.4185 |
+| Shrinkage | **0.4072** |
+
+Raw head-to-head cannot predict unseen matchups without a fallback, so it is excluded from this table.
+
+## Run locally
+
+Use **Python 3.12** with the pinned dependencies.
+
+```bash
+git clone https://github.com/rraghav-07/deathovers-iq.git
+cd deathovers-iq
+python -m venv .venv
 ```
 
-Four dashboard pages: Captain's Cheat Sheet, Batter Profile, Bowler Profile
-and Model Validation. This is a historical demo using the backtested setup
-through 2022, with 2023–2024 held out. It is not a current-form advisor.
+### Windows PowerShell
 
-An IPL captain's matchup advisor, built in explained stages.
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m streamlit run app/streamlit_app.py
+```
 
-## What works now
+### macOS or Linux
 
-The supplied 2008–2024 files are loaded into a SQLite star schema. The package
-contains the working database, SQL, reproducible loader, source CSVs and audit.
-A provisional matchup model is now available: see `docs/STEP2_MODEL.md` for
-instructions and explanations. Run `python model/matchup.py` for an example.
-The first chronological backtest is complete: see `docs/STEP3_BACKTEST.md`.
-Run `python model/backtest.py` to reproduce it, then
-`python model/matchup.py --config outputs/model_config.json` to use the tuned
-configuration. Shrinkage reduced MAE by 4.19% versus the bowler baseline and
-30.35% versus raw H2H on 119 common-history test groups; the improvement over
-the league phase average was only 0.87%. Only four common-history death-phase
-groups qualified. The local Streamlit dashboard is complete; public deployment
-and repository publication remain to be done.
+```bash
+.venv/bin/python -m pip install -r requirements.txt
+.venv/bin/python -m streamlit run app/streamlit_app.py
+```
 
-## Run on Windows
+Open the local URL displayed in the terminal.
 
-1. Extract this ZIP. Open the extracted `deathovers-iq` folder in File Explorer.
-2. Click its address bar, type `powershell`, and press Enter.
-3. Check Python: `python --version` (or use `py` in place of `python`).
-4. Run `python etl/load_data.py`.
-5. Look for `Database ready` and three checks marked `passed`.
+The repository includes `data/deathovers.sqlite`, so raw CSVs are not required to explore the dashboard.
 
-No pip packages or SQLite server installation are needed for this stage.
-The included database is already built; running the loader safely rebuilds it
-from `data/raw/matches.csv` and `data/raw/deliveries.csv`.
-Paths are resolved relative to the loader, so moving the project folder is safe.
+## Reproduce the analysis
 
-## What the database means
+Run these commands using the project’s virtual-environment Python:
 
-| Object | Meaning |
-|---|---|
-| `fact_deliveries` | Every source delivery, linked to match, batter, bowler and phase |
-| `dim_player` | Unique names appearing as batter or bowler; not a current squad list |
-| `dim_match` | Match date, original season label, calendar season, venue and teams |
-| `dim_phase` | Powerplay, Middle and Death |
-| `agg_matchup` | Season + batter + bowler + phase totals |
-| `agg_batter_phase` | Season + batter + phase totals |
-| `agg_bowler_phase` | Season + bowler + phase totals |
-| `agg_league_phase` | Season + phase totals for league baselines |
-| `ranked_bowler_phase` | Example SQL window function ranking wicket totals per season and phase |
+```bash
+python model/backtest.py
+python model/matchup.py --config outputs/model_config.json
+python -m unittest discover -s tests -v
+```
 
-The aggregates are SQL views, not duplicate source files. They always reflect
-the fact table. Every aggregate retains season, allowing training-only queries.
-Indexes help SQLite find matches and player/phase combinations efficiently.
+To rebuild the database, place the original `matches.csv` and `deliveries.csv` files in `data/raw/`, then run:
 
-## Cricket and modelling definitions
+```bash
+python etl/load_data.py
+```
 
-- Source over indexes 0–5 map to Powerplay, 6–14 Middle, 15–19 Death.
-- All 260,920 deliveries are retained for audit. Standard profiles exclude the
-  161 rows from innings above 2 (Super Overs).
-- Wides and no-balls are not legal balls. They remain in the fact table.
-- `runs` is runs off the bat, including any scored on illegal deliveries.
-- `runs_conceded` includes bat runs plus wide/no-ball extras. Byes, leg-byes
-  and penalty extras are excluded from bowler charges under the source's
-  single extras-type representation.
-- `wickets` counts caught, bowled, lbw, stumped, caught-and-bowled and hit wicket.
-  Run-outs, retirements and obstructing the field do not earn bowler wickets.
-- The first prediction target will be **bat runs per legal delivery**, with
-  bowler-credited wicket probability **per legal delivery**. `model_runs` and
-  `model_wickets` contain only events on legal deliveries, with `balls` as the
-  common denominator. This is not official economy or official batting strike
-  rate. In particular, it omits runs and wickets on illegal deliveries.
-- Official batting strike rate uses a different balls-faced definition. We
-  will label profile metrics explicitly rather than call this target strike rate.
-- Original season strings are retained. The calendar year of the match date
-  is used for chronological splits: the season labelled `2020/21` is 2020 here.
-- Names are trimmed but not automatically merged. Initials and name changes
-  may require a documented alias map later.
-- This data supports historical analysis through 2024, not live IPL conditions.
+Raw CSVs are not included in the repository. Database-rebuild tests require those source files.
 
-## Checks performed
+## Project structure
 
-The loader verifies match-key uniqueness, source delivery links, player names,
-known extra types, nonnegative runs, run arithmetic, over/innings ranges,
-foreign keys, SQLite integrity and aggregate-to-source legal-ball totals.
-A failed build does not replace an existing database. Audit counts and source
-SHA-256 hashes are written to `outputs/data_quality.json`.
-Exact duplicate source rows were also checked during initial inspection: none.
-Rows are not deduplicated by over and ball, because repeated ball labels can
-occur legitimately after illegal deliveries.
+```text
+app/             Streamlit dashboard
+data/            SQLite database
+docs/            Model and evaluation documentation
+etl/             CSV cleaning and database loader
+model/           Matchup estimates and backtesting
+outputs/         Configuration, audit and evaluation results
+sql/             Schema and aggregate queries
+tests/           Data, model and dashboard checks
+.streamlit/      Dashboard theme configuration
+requirements.txt Pinned Python dependencies
+```
 
-## Planned modelling split
+## Limitations
 
-2008–2021: initial training; 2022: hyperparameter validation; 2023–2024:
-untouched final test. After tuning on 2022, refit on 2008–2022 before evaluating
-the combined 2023–2024 holdout. Use no test-season records for predictions.
+- One chronological holdout does not establish statistical significance or general performance across other periods.
+- Groups with fewer than 12 legal test deliveries are excluded from evaluation.
+- Only four death-phase groups qualify for the common-history comparison.
+- Historical seasons are pooled without recency weighting; estimates do not measure current form.
+- Pitch, venue, toss, handedness, team context and current squad availability are omitted.
+- The prediction target excludes extras and illegal deliveries.
+- Wicket-value rankings and match-winning impact have not been validated.
+- Some selected strengths lie at the edge of the predefined tuning grid.
+- Player profiles overlap with direct matchup history. This is a shrinkage heuristic, not an independent-prior Bayesian posterior.
 
-## Source and publication
+## Technology
 
-Raw CSVs were supplied by the user in `archivEEEEEE.zip`. The exact Kaggle
-dataset URL and redistribution licence have not yet been supplied. Record
-them before public release. Raw CSVs and generated databases are ignored by
-Git by default; do not publish the bundled data without checking its licence.
+Python · pandas · NumPy · SQLite · Streamlit · Plotly
 
-## Next stage
+## Data attribution
 
-Run the local dashboard, then prepare public hosting and repository publication
-with source attribution and data licence details.
+The project uses user-supplied IPL match and ball-by-ball CSVs covering 2008–2024.
+
+**Attribution is incomplete:** the exact original Kaggle dataset URL, creator, version and dataset licence still need to be recorded. The included SQLite database is derived from these files and remains subject to the source dataset’s applicable terms.
+
+## Code licence
+
+A code licence has not yet been added. The dataset’s licence is separate from any licence subsequently applied to the application code.
