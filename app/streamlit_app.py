@@ -47,7 +47,7 @@ with st.sidebar:
 st.markdown('<div class="eyebrow">DEATHOVERS IQ / IPL MATCHUP LAB</div>',unsafe_allow_html=True)
 
 if page=="Captain’s Cheat Sheet":
- st.title('Captain’s Cheat Sheet'); st.markdown('<p class="kicker">A compact, evidence-led view of the next matchup. Use the pitch as a phase marker; the model ranks the bowlers you select from historical legal-delivery rates.</p>',unsafe_allow_html=True); st.markdown('<div class="section-rule"></div>',unsafe_allow_html=True)
+ st.title('Captain’s Cheat Sheet'); st.markdown('<p class="kicker">Compare selected bowlers against a batter using historical matchup data. Choose a phase and inspect predicted scoring rates, wicket probabilities and sample sizes.</p>',unsafe_allow_html=True); st.markdown('<div class="section-rule"></div>',unsafe_allow_html=True)
  control,pitch=st.columns([1.08,1],gap='large')
  with control:
   st.markdown('**Matchup controls**'); batters=player_options('batter'); batter=st.selectbox('Batter',batters,index=batters.index('V Kohli') if 'V Kohli' in batters else 0,key='captain_batter'); phase=st.selectbox('Match phase',list(PHASES),index=2,key='captain_phase'); options=[p for p in model.available_bowlers(phase) if p!=batter]; defaults=[p for p in ['JJ Bumrah','R Ashwin','RA Jadeja','SP Narine'] if p in options]
