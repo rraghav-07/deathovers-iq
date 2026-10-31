@@ -44,7 +44,7 @@ def pitch_component(active):
  st.markdown(f'''<div class="pitch-wrap" role="img" aria-label="Stylised isometric cricket pitch. Visual phase marker only; not a trajectory or field-placement prediction."><div class="stadium-light"></div><div class="pitch-scene"><div class="pitch-3d"><div class="crease"></div><div class="wicket"></div><div class="wicket back"></div><div class="ball"></div></div></div><div class="pitch-label">Static pitch view · no trajectory inference</div></div><div class="timeline" aria-label="Over phase timeline">{timeline}</div>''',unsafe_allow_html=True)
 with st.sidebar:
  st.markdown('## DEATHOVERS IQ'); st.caption('IPL matchup workstation'); page=st.radio('Navigate',["Captain’s Cheat Sheet",'Batter Profile','Bowler Profile','Model Validation'],key='page'); st.divider(); st.markdown('**Frozen data context**'); st.caption(f'Dataset: 2008–2024\n\nRecommendation history: through {model.through_season}\n\nFinal test: 2023–2024'); st.caption('Historical decision support only. No live feed, current-form adjustment, squad list or availability check.')
-st.markdown('<div class="eyebrow">DEATHOVERS IQ / IPL MATCHUP LAB</div>',unsafe_allow_html=True)
+st.markdown('<div class="eyebrow"></div>',unsafe_allow_html=True)
 
 if page=="Captain’s Cheat Sheet":
  st.title('Captain’s Cheat Sheet'); st.markdown('<p class="kicker">Compare selected bowlers against a batter using historical matchup data. Choose a phase and inspect predicted scoring rates, wicket probabilities and sample sizes.</p>',unsafe_allow_html=True); st.markdown('<div class="section-rule"></div>',unsafe_allow_html=True)
