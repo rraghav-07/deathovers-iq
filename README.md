@@ -224,9 +224,13 @@ Python · pandas · NumPy · SQLite · Streamlit · Plotly
 
 ## Data attribution
 
-The project uses user-supplied IPL match and ball-by-ball CSVs covering 2008–2024.
+Source: [IPL Complete Dataset (2008–2024)](https://www.kaggle.com/datasets/patrickb1912/ipl-complete-dataset-20082020), published on Kaggle by **Prateek Bhardwaj**.
 
-**Attribution is incomplete:** the exact original Kaggle dataset URL, creator, version and dataset licence still need to be recorded. The included SQLite database is derived from these files and remains subject to the source dataset’s applicable terms.
+The dataset acknowledges [Cricsheet](https://cricsheet.org/) as its original data source.
+
+DeathOvers IQ uses the supplied `matches.csv` and `deliveries.csv` files. These were transformed into a SQLite database, with derived phase and matchup summaries.
+
+The dataset licence is separate from the application code licence. See the Kaggle dataset page for its licence and source terms.
 
 ## Code licence
 
